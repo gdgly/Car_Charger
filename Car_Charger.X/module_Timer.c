@@ -1,8 +1,12 @@
 #include <xc.h>
+#include <stdint.h>
 
-extern unsigned int T2N;
-extern unsigned int PowerOnCANOverTime;
-extern unsigned int IRef;
+extern uint8_t T2N;
+extern uint8_t T4N;
+extern uint8_t PowerOnCANOverTime;
+extern uint8_t IRef;
+extern uint16_t SinTable[];
+extern uint16_t SinNum;
 
 /*
  * 定时器2初始化
@@ -41,5 +45,42 @@ void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt()
  */
 void initTimer()
 {
+    //Timer1
     
+}
+
+/*
+ * 定时器1中断函数
+ */
+void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt()
+{
+    T1CONbits.TON = 0;
+    SinNum = 0;
+    LATCbits.LATC1 = 1;
+    LATCbits.LATC2 = 0;
+    IFS0bits.T1IF = 0;
+}
+
+/*
+ * 定时器3中断函数
+ */
+void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt()
+{
+    IFS0bits.T3IF = 0;
+}
+
+/*
+ * 定时器4中断函数
+ */
+void __attribute__((__interrupt__, no_auto_psv)) _T4Interrupt()
+{
+    T4N--;
+    if(T4N == 0)
+    {
+        //TIMER1s
+        T4N = 0;
+        T4CONbits.TON = 0;
+        IEC1bits.T4IE = 0;
+    }
+    IFS1bits.T4IF = 0;
 }

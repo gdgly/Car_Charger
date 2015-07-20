@@ -13,6 +13,9 @@ extern "C" {
 #endif
 
     void initIC();
+    void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt();
+    void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt();
+    void __attribute__((__interrupt__, no_auto_psv)) _IC3Interrupt();
 
 #ifdef	__cplusplus
 }

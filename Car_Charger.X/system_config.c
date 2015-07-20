@@ -37,7 +37,7 @@ void initIO()
     RPOR2bits.RP68R = 0x0f;
     TRISDbits.TRISD13 = 1;
     RPINR26bits.C2RXR = 0x4d;
-    //IC1
+    //IC1 
     RPINR7bits.IC1R = 0x12;     //RPI18
     TRISAbits.TRISA2 = 1;       //RA2 set to input
     //IC2
