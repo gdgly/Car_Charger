@@ -1,7 +1,5 @@
-#include <xc.h>
-#include <stdint.h>
+#include "system_global.h"
 
-extern uint16_t PeriodACBuff0, PeriodACBuff1, PeriodAC;
 /*
  * 捕获初始化
  */
@@ -32,29 +30,40 @@ void initIC()
 
 /*
  * 捕获1中断函数
- * 计算输入电压周期并同步
+ * 锁相，计算输入电压周期
  */
 void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt()
 {
     T1CONbits.TON = 1;
-    PeriodACBuff0 = PeriodACBuff1;
-    PeriodACBuff1 = IC1BUF;
-    PeriodAC = PeriodACBuff0 < PeriodACBuff1 ? PeriodACBuff1 - PeriodACBuff0 : PR3 - PeriodACBuff0 + PeriodACBuff1 ;
+    period_AC_buff0 = period_AC_buff1;
+    period_AC_buff1 = IC1BUF;
+    period_AC = period_AC_buff0 < period_AC_buff1 ? period_AC_buff1 - period_AC_buff0 : PR3 - period_AC_buff0 + period_AC_buff1 ;
     IFS0bits.IC1IF = 0;
 }
 
 /*
  * 捕获2中断函数
+ * 硬件保护信号捕获
  */
 void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt()
 {
-    
+    LATAbits.LATA15 = 0;
+    PTCONbits.PTEN = 0;
+    error_count++;
+    if(error_count < 2)
+        T4CONbits.TON = 1;
+    error_LOCK = 1;
+    IFS0bits.IC2IF = 0;
 }
 
 /*
  * 捕获3中断函数
+ * FLT过流信号捕获
  */
 void __attribute__((__interrupt__, no_auto_psv)) _IC3Interrupt()
 {
-    
+    LATAbits.LATA15 = 0;
+    PTCONbits.PTEN = 0;
+    error_FLT = 1;
+    IFS2bits.IC3IF = 0;
 }

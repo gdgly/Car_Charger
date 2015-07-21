@@ -1,4 +1,4 @@
-#include <xc.h>
+#include "system_global.h"
 
 /*
  * PWM初始化

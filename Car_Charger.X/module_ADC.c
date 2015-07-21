@@ -1,4 +1,4 @@
-#include <xc.h>
+#include "system_global.h"
 
 /*
  * ADC1初始化

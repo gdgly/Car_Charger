@@ -1,5 +1,4 @@
-#include <xc.h>
-
+#include "system_global.h"
 /*
  * 配置PLL时钟
  * Fosc=8M*60/2/2=120M
@@ -20,13 +19,15 @@ void initPLL()
  */
 void initIO()
 {
-    //AN0, AN1, AN2, AN3, AN4, AN5, AN8, AN9
+    //ADC
     ANSELA=ANSELB=ANSELC=ANSELD=ANSELE=ANSELG=0;
-    ANSELB=0x033f;
-    //OUT-REV-DET 输出反向检测
-    TRISDbits.TRISD11 = 0;
-    //IO-3 软件封锁
-    TRISAbits.TRISA15 = 0;
+    ANSELB=0x033f;      //AN0, AN1, AN2, AN3, AN4, AN5, AN8, AN9
+    //Signal
+    TRISDbits.TRISD11 = 0;      //OUT-REV-DET 电池反插检测
+    TRISAbits.TRISA15 = 0;      //IO-3 PWM封锁信号
+    TRISAbits.TRISA3 = 0;       //CAP-RDY 硬件就绪信号
+    TRISFbits.TRISF2 = 1;       //电池反接指示
+    TRISDbits.TRISD10 = 1;      //封锁复位
     //CAN1******
     TRISDbits.TRISD3 = 0;
     RPOR1bits.RP67R = 0x0e;
