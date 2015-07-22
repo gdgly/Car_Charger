@@ -47,8 +47,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt()
  */
 void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt()
 {
-    LATAbits.LATA15 = 0;
-    PTCONbits.PTEN = 0;
+    closePWMAll();
     error_count++;
     if(error_count < 2)
         T4CONbits.TON = 1;
@@ -62,8 +61,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt()
  */
 void __attribute__((__interrupt__, no_auto_psv)) _IC3Interrupt()
 {
-    LATAbits.LATA15 = 0;
-    PTCONbits.PTEN = 0;
+    closePWMAll();
     error_FLT = 1;
     IFS2bits.IC3IF = 0;
 }

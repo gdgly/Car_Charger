@@ -8,14 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define MAIN
-#include "system_global.h"
 #include "system_config.h"
-#include "module_CAN.h"
-#include "module_Timer.h"
-#include "module_ADC.h"
-#include "module_IC.h"
-#include "module_PWM.h"
-#include "process_state.h"
+#include "system_global.h"
     
 /*
  * 主函数
@@ -26,7 +20,7 @@ int main()
     INTCON2bits.GIE = 0;
     initIO();
     if(PORT_OUTCONNECT == 0)
-        PORT_OPENPWM = 0;        //软件封锁PWM
+        closePWMAll();        //软件封锁
     initCAN();
     initTimer2();
     INTCON2bits.GIE = 1;
@@ -61,10 +55,7 @@ int main()
                             stateOperation();
         }
         else
-        {
-            PORT_OPENPWM = 0;        //PWM封锁
-            PTCONbits.PTEN = 0;
-        }
+            closePWMAll();
     }
     return (EXIT_SUCCESS);
 }

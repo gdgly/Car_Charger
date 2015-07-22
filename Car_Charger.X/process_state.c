@@ -1,11 +1,16 @@
 #include "system_global.h"
 
+#define DELAY_PULSE 0
+
 /*
  * 复位信号高电平延时
  */
-void delayRST()
+void outRSTPulse()
 {
-    
+    int i=0;
+    PORT_RST = 1;
+    for(i=0; i<DELAY_PULSE; i++);
+    PORT_RST = 0;
 }
 
 /*
@@ -14,8 +19,7 @@ void delayRST()
  */
 void stateBadConnect()
 {
-    PORT_OPENPWM = 0;
-    PTCONbits.PTEN = 0;
+    openPWMAll();
     PORT_OUTREVIND = 1;
 }
 
@@ -25,8 +29,7 @@ void stateBadConnect()
  */
 void stateOverTemp()
 {
-    PORT_OPENPWM = 0;
-    PTCONbits.PTEN = 0;
+    openPWMAll();
     PORT_OUTREVIND = 0;
 }
 
@@ -37,20 +40,15 @@ void stateOverTemp()
 void stateLockAll()
 {
     PORT_OUTREVIND = 0;
-    if(host_trunon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
+    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
     {
         error_FLT = 0;
         error_LOCK = 0;
-        PORT_OPENPWM = 1;
-        PORT_RST = 1;
-        delayRST();
-        PORT_RST = 0;
+        openPWMAll();
+        outRSTPulse();
     }
     else
-    {
-        PORT_OPENPWM = 0;
-        PTCONbits.PTEN = 0;
-    }
+        closePWMAll();
 }
 
 /*
@@ -59,7 +57,15 @@ void stateLockAll()
  */
 void stateLockLOCK()
 {
-    
+    PORT_OUTREVIND = 0;
+    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
+    {
+        error_LOCK = 0;
+        openPWMAll();
+        outRSTPulse();
+    }
+    else
+        closePWMAll();
 }
 
 /*
@@ -68,7 +74,14 @@ void stateLockLOCK()
  */
 void stateLockFLT()
 {
-
+    PORT_OUTREVIND = 0;
+    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
+    {
+        error_FLT = 0;
+        openPWMAll();
+    }
+    else
+        closePWMAll();
 }
 
 /*
@@ -77,5 +90,28 @@ void stateLockFLT()
  */
 void stateOperation()
 {
-    
+    PORT_OUTREVIND = 0;
+    if(error_count == 1)
+    {
+        error_testcount++;
+        if(error_testcount > 200)
+        {
+            error_count = 0;
+            error_testcount = 0;
+        }
+    }
+    if(host_turnon == 1)
+    {
+        openPWM4();
+        if(flag_PWM4)
+            updatePWM4DutyCycle();
+        if(UdcBUSsamp > U_ref0)
+        {
+            openPWM12();
+            if(flag_PWM1)
+                updatePWM12DutyCycle();
+        }
+    }
+    else
+        closePWMAll();
 }

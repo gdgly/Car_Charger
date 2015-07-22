@@ -7,7 +7,7 @@ void initPWM()
 {
     PTCON2bits.PCLKDIV = 0b000;     //clock divided by 1
     PTPER = 6000;                   //PTPER=Fosc*T=120M*50us=6000
-    //PWM1 互补模式
+    //PWM1 DC-DC互补模式
     PWMCON1bits.ITB = 0;            //PTPER provides timing for PWM1 generator
     PWMCON1bits.MDCS = 0;           //PDC1,SDC1 provide duty cycle information for PWM1 generator
     IOCON1bits.PENH = 1;            //PWM1 module controls PWM1H pin
@@ -30,4 +30,46 @@ void initPWM()
     SPHASE4 = 12000;                //F=Fosc/SPHSE4=120M/12k=10kHz
     SDC4 = 6000;                    //default duty cycle D=0.5
     PTCONbits.PTEN = 1;             //turn on PWM
+}
+
+void closePWMAll()
+{
+    IOCON1bits.OVRENH = 1;   //软件封锁
+    IOCON1bits.OVRENL = 1;
+    IOCON2bits.OVRENH = 1;
+    IOCON2bits.OVRENL = 1;
+    IOCON3bits.OVRENH = 1;
+    IOCON3bits.OVRENL = 1;
+    IOCON4bits.OVRENH = 1;
+    IOCON4bits.OVRENL = 1;
+    PORT_OPENPWM = 0;        //硬件封锁
+}
+
+void openPWMAll()
+{
+    PORT_OPENPWM = 1;        //硬件开启
+    IOCON1bits.OVRENH = 0;   //软件开启
+    IOCON1bits.OVRENL = 0;
+    IOCON2bits.OVRENH = 0;
+    IOCON2bits.OVRENL = 0;
+    IOCON3bits.OVRENH = 0;
+    IOCON3bits.OVRENL = 0;
+    IOCON4bits.OVRENH = 0;
+    IOCON4bits.OVRENL = 0;
+}
+
+void openPWM4()
+{
+    PORT_OPENPWM = 1;        //硬件开启
+    IOCON4bits.OVRENH = 0;   //软件开启
+    IOCON4bits.OVRENL = 0;
+}
+
+void openPWM12()
+{
+    PORT_OPENPWM = 1;        //硬件开启
+    IOCON1bits.OVRENH = 0;   //软件开启
+    IOCON1bits.OVRENL = 0;
+    IOCON2bits.OVRENH = 0;
+    IOCON2bits.OVRENL = 0;
 }
