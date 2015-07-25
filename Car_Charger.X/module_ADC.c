@@ -1,7 +1,8 @@
 #include "system_global.h"
 
 /*
- * ADC1初始化
+ * ADC初始化
+ * AN0-Io, AN1-Ug, AN3-Uo, AN4- Temp, AN8-Udc, AN9-Ug
  */
 void initADC()
 {

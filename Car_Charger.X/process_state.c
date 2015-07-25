@@ -40,7 +40,7 @@ void stateOverTemp()
 void stateLockAll()
 {
     PORT_OUTREVIND = 0;
-    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
+    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io_ADC.mean < IO_REF_LIMIT )
     {
         error_FLT = 0;
         error_LOCK = 0;
@@ -58,7 +58,7 @@ void stateLockAll()
 void stateLockLOCK()
 {
     PORT_OUTREVIND = 0;
-    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
+    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io_ADC.mean < IO_REF_LIMIT )
     {
         error_LOCK = 0;
         openPWMAll();
@@ -75,7 +75,7 @@ void stateLockLOCK()
 void stateLockFLT()
 {
     PORT_OUTREVIND = 0;
-    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io.mean < I_ref0 )
+    if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io_ADC.mean < IO_REF_LIMIT )
     {
         error_FLT = 0;
         openPWMAll();
@@ -105,7 +105,7 @@ void stateOperation()
         openPWM4();
         if(flag_PWM4)
             updatePWM4DutyCycle();
-        if(UdcBUSsamp > U_ref0)
+        if(Udc_ADC.samp > UDC_REF)
         {
             openPWM12();
             if(flag_PWM1)

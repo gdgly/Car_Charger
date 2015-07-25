@@ -35,12 +35,12 @@ int main()
     {
         //ADC采样处理
         //CAN收发
-        if(Ug.mean == 311 && PORT_RDY == 1)
+        if(Ug_ADC.mean == 311 && PORT_RDY == 1)
         {
             if(PORT_OUTCONNECT == 1)
                 stateBadConnect();
             else
-                if(error_temp == 1)
+                if(error_Temp == 1)
                     stateOverTemp();
                 else
                     if(error_LOCK == 1)

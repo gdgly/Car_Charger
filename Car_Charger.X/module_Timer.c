@@ -1,8 +1,5 @@
 #include "system_global.h"
 
-#define I_DEFAULT 0
-#define TIMING_PHASELOCK 0
-
 /*
  * 定时器2初始化
  * 定时器模式，上电CAN接收超时定时10s
@@ -31,7 +28,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt()
     {
         T2CONbits.TON = 0;
         poweron_CAN_overtime = 1;
-        I_ref = I_DEFAULT;
+        Io_ref = IO_DEFAULT;
     }
 }
 

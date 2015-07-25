@@ -13,6 +13,8 @@ extern "C" {
 #endif
 
     void initPWM();
+    void __attribute__((__interrupt__, no_auto_psv)) _PWM1Interrupt();
+    void __attribute__((__interrupt__, no_auto_psv)) _PWM4Interrupt();
     void closePWMAll();
     void openPWMAll();
     void openPWM4();

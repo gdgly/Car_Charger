@@ -12,8 +12,9 @@
 extern "C" {
 #endif
 
-
-
+    void PIUdc();
+    void PIUo();
+    void PIIo();
 
 #ifdef	__cplusplus
 }
