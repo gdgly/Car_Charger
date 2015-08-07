@@ -3,7 +3,7 @@
 #define DELAY_PULSE 0
 
 /*
- * 复位信号高电平延时
+ * 复位信号输出
  */
 void outRSTPulse()
 {
@@ -25,7 +25,7 @@ void stateBadConnect()
 
 /*
  * 温度故障处理子程序
- * PORT_OUTCONNECT = 1，error_temp = 1
+ * PORT_OUTCONNECT = 1，error_Temp = 1
  */
 void stateOverTemp()
 {
@@ -35,11 +35,12 @@ void stateOverTemp()
 
 /*
  * 故障LOCK+FTL处理子程序
- * PORT_OUTCONNECT = 1，error_temp = 0，error_LOCK = 1，error_FLT = 1
+ * PORT_OUTCONNECT = 1，error_Temp = 0，error_LOCK = 1，error_FLT = 1
  */
 void stateLockAll()
 {
     PORT_OUTREVIND = 0;
+    //上位机开启信号，当前无错误记录或有错误记录但延时重试，输出电流未超上限
     if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io_ADC.mean < IO_REF_LIMIT )
     {
         error_FLT = 0;
@@ -53,11 +54,12 @@ void stateLockAll()
 
 /*
  * 故障LOCK处理子程序
- * PORT_OUTCONNECT = 1，error_temp = 0，error_LOCK = 1，，error_FLT = 0
+ * PORT_OUTCONNECT = 1，error_Temp = 0，error_LOCK = 1，，error_FLT = 0
  */
 void stateLockLOCK()
 {
     PORT_OUTREVIND = 0;
+    //上位机开启信号，当前无错误记录或有错误记录但延时重试，输出电流未超上限
     if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io_ADC.mean < IO_REF_LIMIT )
     {
         error_LOCK = 0;
@@ -70,11 +72,12 @@ void stateLockLOCK()
 
 /*
  * 故障FLT处理子程序
- * PORT_OUTCONNECT = 1，error_temp = 0，error_LOCK = 0，error_FLT = 1
+ * PORT_OUTCONNECT = 1，error_Temp = 0，error_LOCK = 0，error_FLT = 1
  */
 void stateLockFLT()
 {
     PORT_OUTREVIND = 0;
+    //上位机开启信号，当前无错误记录或有错误记录但延时重试，输出电流未超上限
     if(host_turnon == 1 && (error_count == 0 || (error_count == 1 && flag_timingRST == 1)) && Io_ADC.mean < IO_REF_LIMIT )
     {
         error_FLT = 0;
@@ -91,6 +94,7 @@ void stateLockFLT()
 void stateOperation()
 {
     PORT_OUTREVIND = 0;
+    //有错误记录时监控运行，长期连续未出现错误则清除记录
     if(error_count == 1)
     {
         error_testcount++;

@@ -19,6 +19,7 @@ extern "C" {
     void openPWMAll();
     void openPWM4();
     void openPWM12();
+    void closePWM12();
 
 #ifdef	__cplusplus
 }

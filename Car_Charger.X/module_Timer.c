@@ -19,7 +19,7 @@ void initTimer2()
 
 /*
  * 定时器2中断函数
- * 定时10s，50次中断后超时，关定时器，标志置位
+ * T=10s
  */
 void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt()
 {
@@ -27,8 +27,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt()
     if(T2_count == 0)
     {
         T2CONbits.TON = 0;
-        poweron_CAN_overtime = 1;
-        Io_ref = IO_DEFAULT;
+        poweron_CAN_overtime = 1;       //标志置位
+        Io_ref = IO_DEFAULT;        //使用默认值
     }
 }
 
@@ -67,19 +67,20 @@ void initTimer()
 
 /*
  * 定时器1中断函数
- * 锁相结束中断，正弦表复位，PFC信号切换
+ * 锁相结束中断
  */
 void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt()
 {
     T1CONbits.TON = 0;
-    sin_num = 0;
-    LATCbits.LATC1 = 1;
-    LATCbits.LATC2 = 0;
+    sin_num = 0;        //正弦表复位
+    PORT_PFCLEFT = 1;       //PFC信号切换
+    PORT_PFCRIGHT = 0;
     IFS0bits.T1IF = 0;
 }
 
 /*
  * 定时器4中断函数
+ * T=1s
  */
 void __attribute__((__interrupt__, no_auto_psv)) _T4Interrupt()
 {

@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+    void outRSTPulse();
     void stateBadConnect();
     void stateOverTemp();
     void stateLockAll();

@@ -20,21 +20,25 @@ int main()
     INTCON2bits.GIE = 0;
     initIO();
     if(PORT_OUTCONNECT == 0)
-        closePWMAll();        //软件封锁
+        closePWMAll();        //PWM封锁
     initCAN();
     initTimer2();
     INTCON2bits.GIE = 1;
-    //启动CAN********
+    /*
+     * 启动CAN
+     */
     T2CONbits.TON = 1;
-    while(poweron_CAN_overtime == 0 && poweron_CAN_received == 0);
+    while(poweron_CAN_overtime == 0 && poweron_CAN_received == 0);      //等待上位机信号或超时使用默认值
     initADC();
     initTimer();
     initIC();
     initPWM();
     while(1)
     {
-        //ADC采样处理
-        //CAN收发
+        /*
+         * CAN收发
+         */
+        //电压达标且硬件就绪时根据状态处理
         if(Ug_ADC.mean == 311 && PORT_RDY == 1)
         {
             if(PORT_OUTCONNECT == 1)

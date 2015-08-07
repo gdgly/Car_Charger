@@ -21,6 +21,8 @@ extern "C" {
 #define PORT_OPENPWM LATAbits.LATA15        //PWM封锁
 #define PORT_OUTREVIND LATFbits.LATF2       //电池反接指示
 #define PORT_RST LATDbits.LATD10            //封锁复位
+#define PORT_PFCLEFT LATCbits.LATC1         //PFC输出PWM控制
+#define PORT_PFCRIGHT LATCbits.LATC2
 //锁相环
 #define TIMING_PHASELOCK 0
 //PFC调节常量
@@ -79,7 +81,7 @@ uint8_t T4_count = 5;           //定时器4循环计数次数，5*0.2s=1s
 uint8_t poweron_CAN_overtime = 0;     //上电等待上位机信号超时标志
 uint8_t poweron_CAN_received = 0;     //上电接收上位机信号完成标志
 //正弦表
-uint16_t sin_table[] = {0,8,16,24,32,40,47,55,63,71,79,86,94,101,108,116,123,130,137,143,150,156,163,169,175,181,186,192,197,202,207,211,216,220,224,228,231,234,238,240,243,245,247,249,251,252,253,254,255,255,256,255,255,254,253,252,251,249,247,245,243,240,238,234,231,228,224,220,216,211,207,202,197,192,186,181,175,169,163,156,150,143,137,130,123,116,108,101,94,86,79,71,63,55,47,40,32,24,16,8,0};
+uint16_t sin_table[] = {0, 6, 13, 19, 25, 31, 38, 44, 50, 56, 62, 68, 74, 80, 86, 92, 98, 104, 109, 115, 121, 126, 132, 137, 142, 147, 152, 157, 162, 167, 172, 177, 181, 185, 190, 194, 198, 202, 206, 209, 213, 216, 220, 223, 226, 229, 231, 234, 237, 239, 241, 243, 245, 247, 248, 250, 251, 252, 253, 254, 255, 255, 256, 256, 256, 256, 256, 255, 255, 254, 253, 252, 251, 250, 248, 247, 245, 243, 241, 239, 237, 234, 231, 229, 226, 223, 220, 216, 213, 209, 206, 202, 198, 194, 190, 185, 181, 177, 172, 167, 162, 157, 152, 147, 142, 137, 132, 126, 121, 115, 109, 104, 98, 92, 86, 80, 74, 68, 62, 56, 50, 44, 38, 31, 25, 19, 13, 6};
 uint16_t sin_num = 0;        //正弦读取计位
 //锁相环
 uint16_t period_AC_buff0 = 0, period_AC_buff1 = 0, period_AC = 0;        //AC周期存储
@@ -100,7 +102,7 @@ DATA_PI Io_PI = {0,0,0,0};
 //恒流恒压切换
 uint16_t Io_ref = 0;      //恒流模式给定值
 uint8_t Uo_count = 0;       //切换电压维持计数，Uo_count>20切换
-uint8_t flag_switch_start = 0, flag_switch_complete = 0;        //切换开始、完成标志
+uint8_t switch_start = 0, switch_complete = 0, switch_count = 0, switch_hold = 0;        //切换开始、完成、切换延迟、电压稳定标志
 //ADC采样
 DATA_ADC Ug_ADC = {0,0,0,0,{0,0,0,0},0};
 DATA_ADC Ig_ADC = {0,0,0,0,{0,0,0,0},0};
@@ -124,7 +126,7 @@ extern DATA_PI Udc_PI, Uo_PI, Io_PI;
 extern uint8_t Uo_count;
 extern uint16_t Io_ref;
 extern DATA_ADC Ug_ADC, Ig_ADC, Udc_ADC, Uo_ADC, Io_ADC, Temp_ADC;
-extern uint8_t flag_switch_start, flag_switch_complete;  
+extern uint8_t switch_start, switch_complete, switch_count, switch_hold;  
 
 #endif
 

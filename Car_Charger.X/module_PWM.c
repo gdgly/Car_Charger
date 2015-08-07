@@ -30,10 +30,10 @@ void initPWM()
     //PWM3 
     //PWM4 PFC单路输出
     IOCON4bits.PMOD = 0b11;         //true independent PWM output mode
-    IOCON4bits.PENL = 1;            //PWM module controls PWM4L pin
+    IOCON4bits.PENH = 1;            //PWM module controls PWM4H pin
     PWMCON4bits.ITB = 1;            //use PHASE and SPHASE to sepcific period
-    SPHASE4 = 12000;                //F=Fosc/SPHSE4=120M/12k=10kHz
-    SDC4 = 6000;                    //default duty cycle D=0.5
+    PHASE4 = 4687;                  //F=50Hz*256=12800Hz
+    PDC4 = 2343;                    //default duty cycle D=0.5
     IPC24bits.PWM4IP = 7;
     IFS6bits.PWM4IF = 0;
     IEC6bits.PWM4IE = 1;
@@ -110,4 +110,16 @@ void openPWM12()
     IOCON1bits.OVRENL = 0;
     IOCON2bits.OVRENH = 0;
     IOCON2bits.OVRENL = 0;
+}
+
+/*
+ * PWM1、2关闭函数
+ */
+void closePWM12()
+{
+    PORT_OPENPWM = 0;        //硬件关闭
+    IOCON1bits.OVRENH = 1;   //软件关闭
+    IOCON1bits.OVRENL = 1;
+    IOCON2bits.OVRENH = 1;
+    IOCON2bits.OVRENL = 1;
 }

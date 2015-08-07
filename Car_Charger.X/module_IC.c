@@ -38,20 +38,21 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC1Interrupt()
     period_AC_buff0 = period_AC_buff1;
     period_AC_buff1 = IC1BUF;
     period_AC = period_AC_buff0 < period_AC_buff1 ? period_AC_buff1 - period_AC_buff0 : PR3 - period_AC_buff0 + period_AC_buff1 ;
+    PHASE4 = period_AC>>1;      //PHASE4=period_AC*64/2/128*2=period_AC/2
     IFS0bits.IC1IF = 0;
 }
 
 /*
  * 捕获2中断函数
- * 硬件保护信号捕获
+ * 硬件保护LOCK信号捕获
  */
 void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt()
 {
     closePWMAll();
-    error_count++;
-    if(error_count < 2)
+    error_count++;      //增加错误记录
+    if(error_count == 1)     //有错误后进行延时重启尝试
         T4CONbits.TON = 1;
-    error_LOCK = 1;
+    error_LOCK = 1;     //错误标志置位
     IFS0bits.IC2IF = 0;
 }
 
@@ -62,6 +63,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _IC2Interrupt()
 void __attribute__((__interrupt__, no_auto_psv)) _IC3Interrupt()
 {
     closePWMAll();
-    error_FLT = 1;
+    error_FLT = 1;      //错误标志置位
     IFS2bits.IC3IF = 0;
 }
