@@ -16,11 +16,11 @@ extern "C" {
 #include <stdint.h>
 
 //IO口定义
-#define PORT_OUTCONNECT PORTDbits.RD11      //电池反接检测口
-#define PORT_RDY PORTAbits.RA3              //硬件就绪口
-#define PORT_OPENPWM LATAbits.LATA15        //PWM封锁
+#define PORT_OUTCONNECT PORTAbits.RA2      //电池反接检测口
+#define PORT_RDY PORTDbits.RD11              //硬件就绪口
+#define PORT_OPENPWM LATAbits.LATA3        //PWM封锁
 #define PORT_OUTREVIND LATFbits.LATF2       //电池反接指示
-#define PORT_RST LATDbits.LATD10            //封锁复位
+#define PORT_RST LATAbits.LATA15            //封锁复位
 #define PORT_PFCLEFT LATCbits.LATC1         //PFC输出PWM控制
 #define PORT_PFCRIGHT LATCbits.LATC2
 //锁相环
